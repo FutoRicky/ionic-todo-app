@@ -82,7 +82,7 @@ angular.module('todo-app', ['ionic'])
       return;
     }
 
-    $scope.activeProject.task.push({
+    $scope.activeProject.tasks.push({
       title: task.title,
     });
     $scope.taskModal.hide();
