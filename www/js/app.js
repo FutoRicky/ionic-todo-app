@@ -82,8 +82,9 @@ angular.module('todo-app', ['ionic'])
       return;
     }
 
-    $scope.activeProject.task.push({
+    $scope.activeProject.tasks.push({
       title: task.title,
+      description: task.description || '',
     });
     $scope.taskModal.hide();
 
@@ -91,6 +92,7 @@ angular.module('todo-app', ['ionic'])
     Projects.save($scope.projects);
 
     task.title = '';
+    task.description = '';
   };
 
   $scope.newTask = function() {
@@ -116,10 +118,15 @@ angular.module('todo-app', ['ionic'])
   $scope.editTask = function(index, task) {
     $scope.task = {
       title: task.title,
+      description: task.description || '',
       isDone: task.isDone,
     };
     $scope.taskIndex = index;
     $scope.editTaskModal.show();
+  };
+
+  $scope.closeEditTask = function() {
+    $scope.editTaskModal.hide();
   };
 
   $scope.updateTask = function(index, task) {
@@ -127,7 +134,7 @@ angular.module('todo-app', ['ionic'])
       return;
     }
 
-    $scope.activeProject.task[index] = task;
+    $scope.activeProject.tasks[index] = task;
     $scope.editTaskModal.hide();
 
     Projects.save($scope.projects);
@@ -139,7 +146,7 @@ angular.module('todo-app', ['ionic'])
       return;
     }
 
-    $scope.activeProject.task[index].isDone = ($scope.activeProject.task[index].isDone === 'YES') ? 'NO' : 'YES';
+    $scope.activeProject.tasks[index].isDone = ($scope.activeProject.tasks[index].isDone === 'YES') ? 'NO' : 'YES';
     Projects.save($scope.projects);
   };
 
@@ -150,27 +157,57 @@ angular.module('todo-app', ['ionic'])
     }
 
     $scope.showConfirm(function() {
-      $scope.activeProject.task.splice(index, 1);
+      $scope.activeProject.tasks.splice(index, 1);
       Projects.save($scope.projects);
     });
   };
 
   // confirm dialog
-  $scope.showConfirm = function(onYes) {
+  $scope.showConfirm = function(del) {
     var confirmPopup = $ionicPopup.confirm({
       title: 'Delete Task',
       template: 'Are you sure you want to delete this task?',
     });
     confirmPopup.then(function(res) {
       if (res) {
-        onYes();
+        del();
       }
     });
   };
 
-  // Try to create the first project, make sure to defer
-  // this by using $timeout so everything is initialized
-  // properly
+  // Description box
+  $scope.viewDescription = function(index, task) {
+    if (!$scope.activeProject || !task) {
+      return;
+    }
+
+    $scope.showDescription(index, function() {
+      Projects.save($scope.projects);
+    });
+  };
+
+  $scope.showDescription = function(index) {
+    var task = $scope.activeProject.tasks[index];
+    var description = task.description || 'No description';
+    $ionicPopup.show({
+      title: task.title,
+      template: '<p>' + description + '</p>',
+      buttons: [{
+        text: 'To-do',
+        type: 'button-default',
+        onTap: function() {
+          task.isDone = 'NO';
+        },
+      }, {
+        text: 'Done',
+        type: 'button-positive',
+        onTap: function() {
+          task.isDone = 'YES';
+        },
+      }],
+    });
+  };
+
   $timeout(function() {
     if ($scope.projects.length === 0) {
       while (true) {

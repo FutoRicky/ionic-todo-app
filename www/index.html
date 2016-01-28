@@ -33,7 +33,7 @@
 
       <!-- Center content -->
       <ion-side-menu-content>
-        <ion-header-bar class="bar-dark">
+        <ion-header-bar class="bar-stable">
           <button class="button button-icon" ng-click="toggleProjects()">
             <i class="icon ion-navicon"></i>
           </button>
@@ -45,12 +45,13 @@
         </ion-header-bar>
         <ion-content scroll="false">
           <ion-list>
-            <ion-item class="item" ng-repeat="task in activeProject.task">
+            <ion-item class="item" ng-repeat="task in activeProject.tasks">
               <span ng-click="toggleDone($index, task)">{{task.title}}</span>
               <i class="icon ion-ios-minus-outline" ng-click="deleteTask(taskIndex, task)"></i>
               <i class="icon ion-edit" ng-click="editTask($index, task)"></i>
-              <i class="icon ion-android-checkbox-outline" ng-show="task.isDone === 'YES'" ng-click="toggleDone($index, task)"></i>
               <i class="icon ion-android-checkbox-outline-blank" ng-hide="task.isDone === 'YES'" ng-click="toggleDone($index, task)"></i>
+              <i class="icon ion-android-checkbox-outline" ng-show="task.isDone === 'YES'" ng-click="toggleDone($index, task)"></i>
+              <i class="icon ion-ios-information-outline" ng-click="viewDescription($index,task)"></i>
             </ion-item>
           </ion-list>
         </ion-content>
@@ -58,7 +59,7 @@
 
       <!-- Left menu -->
       <ion-side-menu side="left">
-        <ion-header-bar class="bar-dark">
+        <ion-header-bar class="bar-stable">
           <h1 class="title">Projects</h1>
           <button class="button button-icon ion-plus" ng-click="newProject()">
           </button>
@@ -85,6 +86,9 @@
                 <label class="item item-input">
                   <input type="text" placeholder="What do you need to do?" ng-model="task.title">
                 </label>
+                <label class="item item-input">
+                  <input type="text" placeholder="Describe it" ng-model="task.description">
+                </label>
               </div>
               <div class="padding">
                 <button type="submit" class="button button-block button-positive">Create Task</button>
@@ -108,6 +112,9 @@
               <div class="list">
                 <label class="item item-input">
                   <input type="text" placeholder="What do you need to do?" ng-model="task.title">
+                </label>
+                <label class="item item-input">
+                  <input type="text" placeholder="Describe it" ng-model="task.description">
                 </label>
               </div>
 
