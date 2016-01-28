@@ -38,7 +38,7 @@ angular.module('todo-app', ['ionic'])
   };
 })
 
-.controller('TodoCtrl', function($scope, $timeout, $ionicModal, Projects, $ionicSideMenuDelegate) {
+.controller('TodoCtrl', function($scope, $timeout, $ionicModal, Projects, $ionicSideMenuDelegate, $ionicPopup) {
 
   // A utility function for creating a new project
   // with the given projectTitle
@@ -141,6 +141,31 @@ angular.module('todo-app', ['ionic'])
 
     $scope.activeProject.task[index].isDone = ($scope.activeProject.task[index].isDone === 'YES') ? 'NO' : 'YES';
     Projects.save($scope.projects);
+  };
+
+  // Delete task functionality
+  $scope.deleteTask = function(index, task) {
+    if (!$scope.activeProject || !task) {
+      return;
+    }
+
+    $scope.showConfirm(function() {
+      $scope.activeProject.task.splice(index, 1);
+      Projects.save($scope.projects);
+    });
+  };
+
+  // confirm dialog
+  $scope.showConfirm = function(onYes) {
+    var confirmPopup = $ionicPopup.confirm({
+      title: 'Delete Task',
+      template: 'Are you sure you want to delete this task?',
+    });
+    confirmPopup.then(function(res) {
+      if (res) {
+        onYes();
+      }
+    });
   };
 
   // Try to create the first project, make sure to defer
