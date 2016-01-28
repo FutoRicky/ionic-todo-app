@@ -82,7 +82,7 @@ angular.module('todo-app', ['ionic'])
       return;
     }
 
-    $scope.activeProject.tasks.push({
+    $scope.activeProject.task.push({
       title: task.title,
     });
     $scope.taskModal.hide();
@@ -103,6 +103,33 @@ angular.module('todo-app', ['ionic'])
 
   $scope.toggleProjects = function() {
     $ionicSideMenuDelegate.toggleLeft();
+  };
+
+  $ionicModal.fromTemplateUrl('edit-task.html', function(modal) {
+    $scope.editTaskModal = modal;
+  }, {
+    scope: $scope,
+    animation: 'slide-in-up',
+  });
+
+  $scope.editTask = function(index, task) {
+    $scope.task = {
+      title: task.title,
+      isDone: task.isDone,
+    };
+    $scope.taskIndex = index;
+    $scope.editTaskModal.show();
+  };
+
+  $scope.updateTask = function(index, task) {
+    if (!$scope.activeProject || !task) {
+      return;
+    }
+
+    $scope.activeProject.task[index] = task;
+    $scope.editTaskModal.hide();
+
+    Projects.save($scope.projects);
   };
 
   // Try to create the first project, make sure to defer
