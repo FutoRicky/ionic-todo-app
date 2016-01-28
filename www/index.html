@@ -46,7 +46,9 @@
         <ion-content scroll="false">
           <ion-list>
             <ion-item class="item" ng-repeat="task in activeProject.task">
-              {{task.title}}
+              <i class="icon ion-ios-checkmark-outline" ng-hide="task.isDone === 'YES'" ng-click="toggleDone($index, task)"></i>
+              <i class="icon ion-ios-checkmark" ng-show="task.isDone === 'YES'" ng-click="toggleDone($index, task)"></i>
+              <span ng-click="toggleDone($index, task)">{{task.title}}</span>
               <i class="icon ion-edit" ng-click="editTask($index, task)"></i>
             </ion-item>
           </ion-list>

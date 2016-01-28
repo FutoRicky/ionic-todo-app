@@ -112,6 +112,7 @@ angular.module('todo-app', ['ionic'])
     animation: 'slide-in-up',
   });
 
+  // Edit functionality
   $scope.editTask = function(index, task) {
     $scope.task = {
       title: task.title,
@@ -129,6 +130,16 @@ angular.module('todo-app', ['ionic'])
     $scope.activeProject.task[index] = task;
     $scope.editTaskModal.hide();
 
+    Projects.save($scope.projects);
+  };
+
+  // Mark as done functionality
+  $scope.toggleDone = function(index, task) {
+    if (!$scope.activeProject || !task) {
+      return;
+    }
+
+    $scope.activeProject.task[index].isDone = ($scope.activeProject.task[index].isDone === 'YES') ? 'NO' : 'YES';
     Projects.save($scope.projects);
   };
 
